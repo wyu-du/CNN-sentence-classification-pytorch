@@ -17,7 +17,7 @@ def train(data, params):
     if params["MODEL"] != "rand":
         # load word2vec
         print("loading word2vec...")
-        word_vectors = KeyedVectors.load_word2vec_format("GoogleNews-vectors-negative300.bin", binary=True)
+        word_vectors = KeyedVectors.load_word2vec_format("GoogleNews-vectors-negative300.bin.gz", binary=True)
 
         wv_matrix = []
         for i in range(len(data["vocab"])):
