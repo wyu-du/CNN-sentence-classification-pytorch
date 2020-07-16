@@ -90,18 +90,46 @@ def test(data, model, params, mode="test"):
         x, y = data["dev_x"], data["dev_y"]
     elif mode == "test":
         x, y = data["test_x"], data["test_y"]
+        
+    correct = 0.
+    counts = 0.
+    for i in range(0, len(x), params["BATCH_SIZE"]):
+        batch_range = min(params["BATCH_SIZE"], len(x) - i)
 
-    x = [[data["word_to_idx"][w] if w in data["vocab"] else params["VOCAB_SIZE"] for w in sent] +
-         [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent))
-         for sent in x]
+        batch_x = [[data["word_to_idx"][w] for w in sent] +
+                   [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent))
+                   for sent in x[i:i + batch_range]]
+        batch_y = [data["classes"].index(c) for c in y[i:i + batch_range]]
 
-    x = Variable(torch.LongTensor(x)).cuda(params["GPU"])
-    y = [data["classes"].index(c) for c in y]
+        batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
+        batch_y = Variable(torch.LongTensor(batch_y)).cuda(params["GPU"])
 
-    pred = torch.argmax(model(x), axis=1)
-    acc = sum([1 if p == y else 0 for p, y in zip(pred, y)]) / len(pred)
+        pred = torch.argmax(model(batch_x), axis=1)
+        acc = sum([1 if p == y else 0 for p, y in zip(pred, batch_y)])
+        correct += acc
+        counts += len(pred)
 
-    return acc
+    return correct/counts
+
+
+def pred(data, model, params, mode="pred"):
+    model.eval()
+
+    x = data["test_x"]
+    outs = []
+    for i in range(0, len(x), params["BATCH_SIZE"]):
+        batch_range = min(params["BATCH_SIZE"], len(x) - i)
+
+        batch_x = [[data["word_to_idx"][w] for w in sent] +
+                   [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent))
+                   for sent in x[i:i + batch_range]]
+
+        batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
+        pred = torch.argmax(model(batch_x), axis=1)
+        for p_x in pred:
+            outs.append(p_x.item())
+    
+    return outs
 
 
 def main():
@@ -131,7 +159,7 @@ def main():
         "EPOCH": options.epoch,
         "LEARNING_RATE": options.learning_rate,
         "MAX_SENT_LEN": max([len(sent) for sent in data["train_x"] + data["dev_x"] + data["test_x"]]),
-        "BATCH_SIZE": 16,
+        "BATCH_SIZE": 64,
         "WORD_DIM": 300,
         "VOCAB_SIZE": len(data["vocab"]),
         "CLASS_SIZE": len(data["classes"]),
