@@ -35,10 +35,8 @@ def train(data, params):
 
     model = CNN(**params).cuda(params["GPU"])
 
-    parameters = filter(lambda p: p.requires_grad, model.parameters())
-    for param in parameters:
-        print(param.data)
-    optimizer = optim.Adadelta(parameters, params["LEARNING_RATE"])
+#    parameters = filter(lambda p: p.requires_grad, model.parameters())
+    optimizer = optim.Adadelta(model.parameters(), params["LEARNING_RATE"])
     criterion = nn.CrossEntropyLoss()
 
     pre_dev_acc = 0
