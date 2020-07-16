@@ -61,7 +61,7 @@ def train(data, params):
             pred = model(batch_x)
             loss = criterion(pred, batch_y)
             loss.backward()
-            nn.utils.clip_grad_norm(parameters, max_norm=params["NORM_LIMIT"])
+            nn.utils.clip_grad_norm_(parameters, max_norm=params["NORM_LIMIT"])
             optimizer.step()
 
         dev_acc = test(data, model, params, mode="dev")
