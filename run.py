@@ -55,15 +55,13 @@ def train(data, params):
 
             batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
             batch_y = Variable(torch.LongTensor(batch_y)).cuda(params["GPU"])
-            print(batch_x.data)
-            print(batch_y.data)
 
             optimizer.zero_grad()
             model.train()
             pred = model(batch_x)
             loss = criterion(pred, batch_y)
             loss.backward()
-            nn.utils.clip_grad_norm_(parameters, max_norm=params["NORM_LIMIT"])
+            nn.utils.clip_grad_norm_(model.parameters(), max_norm=params["NORM_LIMIT"])
             optimizer.step()
 
         dev_acc = test(data, model, params, mode="dev")
