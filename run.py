@@ -34,6 +34,10 @@ def train(data, params):
         params["WV_MATRIX"] = wv_matrix
 
     model = CNN(**params).cuda(params["GPU"])
+    
+    for name, param in model.named_parameters():
+        if param.requires_grad:
+            print(name, param.data)
 
     parameters = filter(lambda p: p.requires_grad, model.parameters())
     optimizer = optim.Adadelta(parameters, params["LEARNING_RATE"])
