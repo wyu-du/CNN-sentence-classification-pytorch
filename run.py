@@ -107,10 +107,10 @@ def test(data, model, params, mode="test"):
 def main():
     parser = argparse.ArgumentParser(description="-----[CNN-classifier]-----")
     parser.add_argument("--mode", default="train", help="train: train (with test) a model / test: test saved models")
-    parser.add_argument("--model", default="rand", help="available models: rand, static, non-static, multichannel")
-    parser.add_argument("--dataset", default="TREC", help="available datasets: MR, TREC")
-    parser.add_argument("--save_model", default=False, action='store_true', help="whether saving model or not")
-    parser.add_argument("--early_stopping", default=False, action='store_true', help="whether to apply early stopping")
+    parser.add_argument("--model", default="non-static", help="available models: rand, static, non-static, multichannel")
+    parser.add_argument("--dataset", default="DailyDialog", help="available datasets: MR, TREC, DailyDialog")
+    parser.add_argument("--save_model", default=True, action='store_true', help="whether saving model or not")
+    parser.add_argument("--early_stopping", default=True, action='store_true', help="whether to apply early stopping")
     parser.add_argument("--epoch", default=100, type=int, help="number of max epoch")
     parser.add_argument("--learning_rate", default=1.0, type=float, help="learning rate")
     parser.add_argument("--gpu", default=-1, type=int, help="the number of gpu to be used")
@@ -131,7 +131,7 @@ def main():
         "EPOCH": options.epoch,
         "LEARNING_RATE": options.learning_rate,
         "MAX_SENT_LEN": max([len(sent) for sent in data["train_x"] + data["dev_x"] + data["test_x"]]),
-        "BATCH_SIZE": 50,
+        "BATCH_SIZE": 32,
         "WORD_DIM": 300,
         "VOCAB_SIZE": len(data["vocab"]),
         "CLASS_SIZE": len(data["classes"]),

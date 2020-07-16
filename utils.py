@@ -31,6 +31,35 @@ def read_TREC():
     return data
 
 
+def read_DailyDialog():
+    data = {}
+
+    def read(mode):
+        x, y = [], []
+
+        with open("data/DailyDialog/intent_classification_" + mode + ".txt", "r", encoding="utf-8") as f:
+            lines = f.read().split("\n")
+            for line in lines:
+                if len(line) > 0:
+                    y.append(line.split()[0])
+                    x.append(line.split()[1:])
+
+        x, y = shuffle(x, y)
+
+        if mode == "train":
+            data["train_x"], data["train_y"] = x, y
+        elif mode == "dev":
+            data["dev_x"], data["dev_y"] = x, y
+        else:
+            data["test_x"], data["test_y"] = x, y
+
+    read("train")
+    read("dev")
+    read("test")
+
+    return data
+
+
 def read_MR():
     data = {}
     x, y = [], []
