@@ -98,7 +98,7 @@ def test(data, model, params, mode="test"):
     x = Variable(torch.LongTensor(x)).cuda(params["GPU"])
     y = [data["classes"].index(c) for c in y]
 
-    pred = np.argmax(model(x).cpu().data.numpy(), axis=1)
+    pred = torch.argmax(model(x), axis=1)
     acc = sum([1 if p == y else 0 for p, y in zip(pred, y)]) / len(pred)
 
     return acc
@@ -111,7 +111,7 @@ def main():
     parser.add_argument("--dataset", default="DailyDialog", help="available datasets: MR, TREC, DailyDialog")
     parser.add_argument("--save_model", default=True, action='store_true', help="whether saving model or not")
     parser.add_argument("--early_stopping", default=False, action='store_true', help="whether to apply early stopping")
-    parser.add_argument("--epoch", default=100, type=int, help="number of max epoch")
+    parser.add_argument("--epoch", default=50, type=int, help="number of max epoch")
     parser.add_argument("--learning_rate", default=1.0, type=float, help="learning rate")
     parser.add_argument("--gpu", default=-1, type=int, help="the number of gpu to be used")
 
@@ -131,7 +131,7 @@ def main():
         "EPOCH": options.epoch,
         "LEARNING_RATE": options.learning_rate,
         "MAX_SENT_LEN": max([len(sent) for sent in data["train_x"] + data["dev_x"] + data["test_x"]]),
-        "BATCH_SIZE": 32,
+        "BATCH_SIZE": 16,
         "WORD_DIM": 300,
         "VOCAB_SIZE": len(data["vocab"]),
         "CLASS_SIZE": len(data["classes"]),
