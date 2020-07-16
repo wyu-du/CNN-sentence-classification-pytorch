@@ -110,7 +110,7 @@ def main():
     parser.add_argument("--model", default="non-static", help="available models: rand, static, non-static, multichannel")
     parser.add_argument("--dataset", default="DailyDialog", help="available datasets: MR, TREC, DailyDialog")
     parser.add_argument("--save_model", default=True, action='store_true', help="whether saving model or not")
-    parser.add_argument("--early_stopping", default=True, action='store_true', help="whether to apply early stopping")
+    parser.add_argument("--early_stopping", default=False, action='store_true', help="whether to apply early stopping")
     parser.add_argument("--epoch", default=100, type=int, help="number of max epoch")
     parser.add_argument("--learning_rate", default=1.0, type=float, help="learning rate")
     parser.add_argument("--gpu", default=-1, type=int, help="the number of gpu to be used")
