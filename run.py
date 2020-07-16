@@ -36,7 +36,8 @@ def train(data, params):
     model = CNN(**params).cuda(params["GPU"])
 
 #    parameters = filter(lambda p: p.requires_grad, model.parameters())
-    optimizer = optim.Adadelta(model.parameters(), params["LEARNING_RATE"])
+#    optimizer = optim.Adadelta(model.parameters(), params["LEARNING_RATE"])
+    optimizer = optim.Adam(model.parameters(), params["LEARNING_RATE"])
     criterion = nn.CrossEntropyLoss()
 
     pre_dev_acc = 0
@@ -139,8 +140,8 @@ def main():
     parser.add_argument("--dataset", default="DailyDialog_sent", help="available datasets: MR, TREC, DailyDialog")
     parser.add_argument("--save_model", default=True, action='store_true', help="whether saving model or not")
     parser.add_argument("--early_stopping", default=False, action='store_true', help="whether to apply early stopping")
-    parser.add_argument("--epoch", default=50, type=int, help="number of max epoch")
-    parser.add_argument("--learning_rate", default=0.1, type=float, help="learning rate")
+    parser.add_argument("--epoch", default=100, type=int, help="number of max epoch")
+    parser.add_argument("--learning_rate", default=0.001, type=float, help="learning rate")
     parser.add_argument("--gpu", default=-1, type=int, help="the number of gpu to be used")
 
     options = parser.parse_args()
