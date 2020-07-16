@@ -34,12 +34,10 @@ def train(data, params):
         params["WV_MATRIX"] = wv_matrix
 
     model = CNN(**params).cuda(params["GPU"])
-    
-    for name, param in model.named_parameters():
-        if param.requires_grad:
-            print(name, param.data)
 
     parameters = filter(lambda p: p.requires_grad, model.parameters())
+    for param in parameters:
+        print(param.data)
     optimizer = optim.Adadelta(parameters, params["LEARNING_RATE"])
     criterion = nn.CrossEntropyLoss()
 
@@ -59,6 +57,8 @@ def train(data, params):
 
             batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
             batch_y = Variable(torch.LongTensor(batch_y)).cuda(params["GPU"])
+            print(batch_x.data)
+            print(batch_y.data)
 
             optimizer.zero_grad()
             model.train()
