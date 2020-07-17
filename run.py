@@ -115,8 +115,11 @@ def test(data, model, params, mode="test"):
 
 def predict(data, model, params, model_name="Seq2Seq"):
     model.eval()
-
-    x = data[model_name]
+    
+    if model_name == 'test':
+        x = data["test_x"]
+    else:
+        x = data[model_name]
     outs = []
     for i in range(0, len(x), params["BATCH_SIZE"]):
         batch_range = min(params["BATCH_SIZE"], len(x) - i)
