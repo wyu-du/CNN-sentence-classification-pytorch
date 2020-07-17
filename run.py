@@ -113,10 +113,10 @@ def test(data, model, params, mode="test"):
     return correct/counts
 
 
-def pred(data, model, params, mode="pred"):
+def predict(data, model, params, model_name="Seq2Seq"):
     model.eval()
 
-    x = data["test_x"]
+    x = data[model_name]
     outs = []
     for i in range(0, len(x), params["BATCH_SIZE"]):
         batch_range = min(params["BATCH_SIZE"], len(x) - i)
@@ -135,14 +135,15 @@ def pred(data, model, params, mode="pred"):
 
 def main():
     parser = argparse.ArgumentParser(description="-----[CNN-classifier]-----")
-    parser.add_argument("--mode", default="train", help="train: train (with test) a model / test: test saved models")
+    parser.add_argument("--mode", default="pred", help="train: train (with test) a model / test: test saved models")
     parser.add_argument("--model", default="non-static", help="available models: rand, static, non-static, multichannel")
-    parser.add_argument("--dataset", default="DailyDialog_sent", help="available datasets: MR, TREC, DailyDialog")
+    parser.add_argument("--model_name", default="Seq2Seq", help="available models: Seq2Seq, HRED, VHRED, HRAN")
+    parser.add_argument("--dataset", default="DailyDialog_pred", help="available datasets: MR, TREC, DailyDialog")
     parser.add_argument("--save_model", default=True, action='store_true', help="whether saving model or not")
     parser.add_argument("--early_stopping", default=False, action='store_true', help="whether to apply early stopping")
     parser.add_argument("--epoch", default=100, type=int, help="number of max epoch")
     parser.add_argument("--learning_rate", default=0.001, type=float, help="learning rate")
-    parser.add_argument("--gpu", default=-1, type=int, help="the number of gpu to be used")
+    parser.add_argument("--gpu", default=0, type=int, help="the number of gpu to be used")
 
     options = parser.parse_args()
     data = getattr(utils, f"read_{options.dataset}")()
@@ -187,12 +188,16 @@ def main():
         if params["SAVE_MODEL"]:
             utils.save_model(model, params)
         print("=" * 20 + "TRAINING FINISHED" + "=" * 20)
-    else:
+    elif options.mode == "test":
         model = utils.load_model(params).cuda(params["GPU"])
-
         test_acc = test(data, model, params)
         print("test acc:", test_acc)
-
+    else:
+        model = utils.load_model(params).cuda(params["GPU"])
+        model_preds = predict(data, model, params, options.model_name)
+        with open('data/DailyDialog_pred/'+options.model_name, 'w') as f:
+            for pred in model_preds:
+                f.write(str(pred)+'\n')
 
 if __name__ == "__main__":
     main()

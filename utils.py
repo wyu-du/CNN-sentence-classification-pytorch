@@ -89,6 +89,27 @@ def read_DailyDialog_sent():
     return data
 
 
+def read_DailyDialog_pred():
+    data = read_DailyDialog_sent()
+
+    def read(model):
+        x = []
+
+        with open("data/DailyDialog_pred/" + model + ".txt", "r", encoding="utf-8") as f:
+            lines = f.read().split("\n")
+            for line in lines:
+                if len(line) > 0:
+                    x.append(line.split())
+
+        data[model] = x
+
+    read("Seq2Seq")
+    read("HRED")
+    read("VHRED")
+
+    return data
+
+
 def read_MR():
     data = {}
     x, y = [], []
