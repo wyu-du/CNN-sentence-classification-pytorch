@@ -106,6 +106,7 @@ def read_DailyDialog_pred():
     read("Seq2Seq")
     read("HRED")
     read("VHRED")
+    read("HRAD")
 
     return data
 
