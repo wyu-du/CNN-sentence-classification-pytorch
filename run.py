@@ -195,7 +195,7 @@ def main():
     else:
         model = utils.load_model(params).cuda(params["GPU"])
         model_preds = predict(data, model, params, options.model_name)
-        with open('data/DailyDialog_pred/'+options.model_name, 'w') as f:
+        with open('data/DailyDialog_pred/'+options.model_name+'_label.txt', 'w') as f:
             for pred in model_preds:
                 f.write(str(pred)+'\n')
 
