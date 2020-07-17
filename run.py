@@ -146,7 +146,10 @@ def main():
     parser.add_argument("--gpu", default=0, type=int, help="the number of gpu to be used")
 
     options = parser.parse_args()
-    data = getattr(utils, f"read_{options.dataset}")()
+    if options.mode == "pred":
+        data = getattr(utils, f"read_DailyDialog_pred")()
+    else:
+        data = getattr(utils, f"read_{options.dataset}")()
 
     data["vocab"] = sorted(list(set([w for sent in data["train_x"] + data["dev_x"] + data["test_x"] for w in sent])))
     data["classes"] = sorted(list(set(data["train_y"])))
