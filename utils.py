@@ -107,6 +107,7 @@ def read_DailyDialog_pred():
     read("HRED")
     read("VHRED")
     read("HRAN")
+    read("DSHRED_RA")
 
     return data
 
