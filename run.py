@@ -155,7 +155,7 @@ def main():
         data = getattr(utils, f"read_{options.dataset}")()
 
     data["vocab"] = sorted(list(set([w for sent in data["train_x"] + data["dev_x"] + data["test_x"] for w in sent])))
-    data["classes"] = sorted(list(set(data["train_y"])))
+    data["classes"] = sorted(list(set(data["train_y"]+data["dev_y"]+data["test_y"])))
     data["word_to_idx"] = {w: i for i, w in enumerate(data["vocab"])}
     data["idx_to_word"] = {i: w for i, w in enumerate(data["vocab"])}
 
