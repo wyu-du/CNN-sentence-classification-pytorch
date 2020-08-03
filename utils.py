@@ -89,6 +89,35 @@ def read_DailyDialog_sent():
     return data
 
 
+def read_DA_ISO_sent():
+    data = {}
+
+    def read(mode):
+        x, y = [], []
+
+        with open("data/DA_ISO_sent/" + mode + ".txt", "r", encoding="utf-8") as f:
+            lines = f.read().split("\n")
+            for line in lines:
+                if len(line) > 0:
+                    y.append(line.split()[0])
+                    x.append(line.split()[1:])
+
+        x, y = shuffle(x, y)
+
+        if mode == "train":
+            data["train_x"], data["train_y"] = x, y
+        elif mode == "dev":
+            data["dev_x"], data["dev_y"] = x, y
+        else:
+            data["test_x"], data["test_y"] = x, y
+
+    read("train")
+    read("dev")
+    read("test")
+
+    return data
+
+
 def read_DailyDialog_pred():
     data = read_DailyDialog_sent()
 
