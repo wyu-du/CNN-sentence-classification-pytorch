@@ -89,21 +89,18 @@ def read_DailyDialog_sent():
     return data
 
 
-def read_DA_ISO_sent():
+def read_DA_DailyDialog_sent():
     data = {}
 
     def read(mode):
         x, y = [], []
-
         with open("data/DA_ISO_sent/" + mode + ".txt", "r", encoding="utf-8") as f:
             lines = f.read().split("\n")
             for line in lines:
                 if len(line) > 0:
                     y.append(line.split()[0])
                     x.append(line.split()[1:])
-
         x, y = shuffle(x, y)
-
         if mode == "train":
             data["train_x"], data["train_y"] = x, y
         elif mode == "dev":
@@ -111,9 +108,87 @@ def read_DA_ISO_sent():
         else:
             data["test_x"], data["test_y"] = x, y
 
-    read("train")
-    read("dev")
-    read("test")
+    read("DailyDialog_train")
+    read("DailyDialog_dev")
+    read("DailyDialog_test")
+
+    return data
+
+
+def read_DA_AMI_sent():
+    data = {}
+
+    def read(mode):
+        x, y = [], []
+        with open("data/DA_ISO_sent/" + mode + ".txt", "r", encoding="utf-8") as f:
+            lines = f.read().split("\n")
+            for line in lines:
+                if len(line) > 0:
+                    y.append(line.split()[0])
+                    x.append(line.split()[1:])
+        x, y = shuffle(x, y)
+        if mode == "train":
+            data["train_x"], data["train_y"] = x, y
+        elif mode == "dev":
+            data["dev_x"], data["dev_y"] = x, y
+        else:
+            data["test_x"], data["test_y"] = x, y
+
+    read("AMI_train")
+    read("AMI_dev")
+    read("AMI_test")
+
+    return data
+
+
+def read_DA_MapTask_sent():
+    data = {}
+
+    def read(mode):
+        x, y = [], []
+        with open("data/DA_ISO_sent/" + mode + ".txt", "r", encoding="utf-8") as f:
+            lines = f.read().split("\n")
+            for line in lines:
+                if len(line) > 0:
+                    y.append(line.split()[0])
+                    x.append(line.split()[1:])
+        x, y = shuffle(x, y)
+        if mode == "train":
+            data["train_x"], data["train_y"] = x, y
+        elif mode == "dev":
+            data["dev_x"], data["dev_y"] = x, y
+        else:
+            data["test_x"], data["test_y"] = x, y
+
+    read("MapTask_train")
+    read("MapTask_dev")
+    read("MapTask_test")
+
+    return data
+
+
+def read_DA_Switchboard_sent():
+    data = {}
+
+    def read(mode):
+        x, y = [], []
+        with open("data/DA_ISO_sent/" + mode + ".txt", "r", encoding="utf-8") as f:
+            lines = f.read().split("\n")
+            for line in lines:
+                if len(line) > 0:
+                    y.append(line.split()[0])
+                    x.append(line.split()[1:])
+        x, y = shuffle(x, y)
+        if mode == "train":
+            data["train_x"], data["train_y"] = x, y
+        elif mode == "dev":
+            data["dev_x"], data["dev_y"] = x, y
+        else:
+            data["test_x"], data["test_y"] = x, y
+
+    read("Switchboard_train")
+    read("Switchboard_dev")
+    read("Switchboard_test")
 
     return data
 

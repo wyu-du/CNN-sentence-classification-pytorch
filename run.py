@@ -141,7 +141,7 @@ def main():
     parser.add_argument("--mode", default="train", help="train: train (with test) a model / test: test saved models")
     parser.add_argument("--model", default="non-static", help="available models: rand, static, non-static, multichannel")
     parser.add_argument("--model_name", default="Seq2Seq", help="available models: Seq2Seq, HRED, VHRED, HRAN")
-    parser.add_argument("--dataset", default="DA_ISO_sent", help="available datasets: MR, TREC, DailyDialog")
+    parser.add_argument("--dataset", default="DA_Switchboard_sent", help="available datasets: MR, TREC, DailyDialog")
     parser.add_argument("--save_model", default=True, action='store_true', help="whether saving model or not")
     parser.add_argument("--early_stopping", default=False, action='store_true', help="whether to apply early stopping")
     parser.add_argument("--epoch", default=100, type=int, help="number of max epoch")
