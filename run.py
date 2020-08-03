@@ -138,10 +138,10 @@ def predict(data, model, params, model_name="Seq2Seq"):
 
 def main():
     parser = argparse.ArgumentParser(description="-----[CNN-classifier]-----")
-    parser.add_argument("--mode", default="pred", help="train: train (with test) a model / test: test saved models")
+    parser.add_argument("--mode", default="train", help="train: train (with test) a model / test: test saved models")
     parser.add_argument("--model", default="non-static", help="available models: rand, static, non-static, multichannel")
     parser.add_argument("--model_name", default="Seq2Seq", help="available models: Seq2Seq, HRED, VHRED, HRAN")
-    parser.add_argument("--dataset", default="DailyDialog_sent", help="available datasets: MR, TREC, DailyDialog")
+    parser.add_argument("--dataset", default="DA_ISO_sent", help="available datasets: MR, TREC, DailyDialog")
     parser.add_argument("--save_model", default=True, action='store_true', help="whether saving model or not")
     parser.add_argument("--early_stopping", default=False, action='store_true', help="whether to apply early stopping")
     parser.add_argument("--epoch", default=100, type=int, help="number of max epoch")
@@ -201,7 +201,7 @@ def main():
     else:
         model = utils.load_model(params).cuda(params["GPU"])
         model_preds = predict(data, model, params, options.model_name)
-        with open('data/DailyDialog_sent/DailyDialog_pred/'+options.model_name+'_label.txt', 'w') as f:
+        with open('data/DA_ISO_sent/pred/'+options.model_name+'_label.txt', 'w') as f:
             for pred in model_preds:
                 f.write(str(pred)+'\n')
 
