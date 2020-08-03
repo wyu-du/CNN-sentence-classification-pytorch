@@ -101,9 +101,9 @@ def read_DA_DailyDialog_sent():
                     y.append(line.split()[0])
                     x.append(line.split()[1:])
         x, y = shuffle(x, y)
-        if mode == "train":
+        if mode.split('_')[1] == "train":
             data["train_x"], data["train_y"] = x, y
-        elif mode == "dev":
+        elif mode.split('_')[1] == "dev":
             data["dev_x"], data["dev_y"] = x, y
         else:
             data["test_x"], data["test_y"] = x, y
@@ -127,9 +127,9 @@ def read_DA_AMI_sent():
                     y.append(line.split()[0])
                     x.append(line.split()[1:])
         x, y = shuffle(x, y)
-        if mode == "train":
+        if mode.split('_')[1] == "train":
             data["train_x"], data["train_y"] = x, y
-        elif mode == "dev":
+        elif mode.split('_')[1] == "dev":
             data["dev_x"], data["dev_y"] = x, y
         else:
             data["test_x"], data["test_y"] = x, y
@@ -153,9 +153,9 @@ def read_DA_MapTask_sent():
                     y.append(line.split()[0])
                     x.append(line.split()[1:])
         x, y = shuffle(x, y)
-        if mode == "train":
+        if mode.split('_')[1] == "train":
             data["train_x"], data["train_y"] = x, y
-        elif mode == "dev":
+        elif mode.split('_')[1] == "dev":
             data["dev_x"], data["dev_y"] = x, y
         else:
             data["test_x"], data["test_y"] = x, y
@@ -179,9 +179,9 @@ def read_DA_Switchboard_sent():
                     y.append(line.split()[0])
                     x.append(line.split()[1:])
         x, y = shuffle(x, y)
-        if mode == "train":
+        if mode.split('_')[1] == "train":
             data["train_x"], data["train_y"] = x, y
-        elif mode == "dev":
+        elif mode.split('_')[1] == "dev":
             data["dev_x"], data["dev_y"] = x, y
         else:
             data["test_x"], data["test_y"] = x, y
