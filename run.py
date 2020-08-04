@@ -212,15 +212,16 @@ def main():
         fpath = 'data/DA_ISO_sent/'+options.dataset+'_pred/'
         if not os.path.exists(fpath):
             os.makedirs(fpath)
-        np.savetxt(fpath + options.model_name + '_label.txt',
-                   model_preds, delimiter=', ', fmt='%12.8f')
+        with open(fpath + options.model_name + '_label.txt', 'w') as f:
+            for pred in model_preds:
+                f.write(pred+'\n')
     else:
         model = utils.load_model(params).cuda(params["GPU"])
         model_preds = predict(data, model, params, options.model_name)
         fpath = 'data/DA_ISO_sent/'+options.dataset+'_pred/'
         if not os.path.exists(fpath):
             os.makedirs(fpath)
-        with open(fpath + 'class_label.txt', 'w') as f:
+        with open(fpath + 'test_label.txt', 'w') as f:
             for pred in model_preds:
                 f.write(pred+'\n')
     
