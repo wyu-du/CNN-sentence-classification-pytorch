@@ -217,7 +217,8 @@ def main():
         np.savetxt(fpath + options.model_name + '_label.txt',
                    model_preds, delimiter=', ', fmt='%12.8f')
         with open(fpath + 'class_label.txt', 'w') as f:
-            f.write(data["classes"])
+            classes = '\t'.join(data["classes"])
+            f.write(classes)
     
 if __name__ == "__main__":
     main()
