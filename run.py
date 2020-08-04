@@ -220,11 +220,9 @@ def main():
         fpath = 'data/DA_ISO_sent/'+options.dataset+'_pred/'
         if not os.path.exists(fpath):
             os.makedirs(fpath)
-        np.savetxt(fpath + options.model_name + '_label.txt',
-                   model_preds, delimiter=', ', fmt='%12.8f')
         with open(fpath + 'class_label.txt', 'w') as f:
-            classes = '\t'.join(data["classes"])
-            f.write(classes)
+            for pred in model_preds:
+                f.write(pred+'\n')
     
 if __name__ == "__main__":
     main()
