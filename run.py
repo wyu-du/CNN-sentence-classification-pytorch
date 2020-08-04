@@ -11,6 +11,7 @@ from gensim.models.keyedvectors import KeyedVectors
 import numpy as np
 import argparse
 import copy
+import os
 
 
 def train(data, params):
@@ -201,12 +202,18 @@ def main():
     elif options.mode == "model_pred":
         model = utils.load_model(params).cuda(params["GPU"])
         model_preds = predict(data, model, params, options.model_name)
-        np.savetxt('data/DA_ISO_sent/'+options.dataset+'_pred/'+options.model_name+'_label.txt',
+        fpath = 'data/DA_ISO_sent/'+options.dataset+'_pred/'
+        if not os.path.exists(fpath):
+            os.makedirs(fpath)
+        np.savetxt(fpath + options.model_name + '_label.txt',
                    model_preds, delimiter=', ', fmt='%12.8f')
     else:
         model = utils.load_model(params).cuda(params["GPU"])
         model_preds = predict(data, model, params, options.model_name)
-        np.savetxt('data/DA_ISO_sent/'+options.dataset+'_pred/'+options.model_name+'_label.txt',
+        fpath = 'data/DA_ISO_sent/'+options.dataset+'_pred/'
+        if not os.path.exists(fpath):
+            os.makedirs(fpath)
+        np.savetxt(fpath + options.model_name + '_label.txt',
                    model_preds, delimiter=', ', fmt='%12.8f')
     
 if __name__ == "__main__":
