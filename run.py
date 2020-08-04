@@ -132,17 +132,15 @@ def predict(data, model, params, model_name="Seq2Seq"):
 
         batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
         pred = model(batch_x)
-        if model_name == 'test':
-            pred = F.softmax(pred, dim=1)
-            pred = pred.cpu().detach().numpy()
-            for b in range(len(pred)):
-                outs.append(pred[b])
-        else:
-            pred = torch.argmax(pred, axis=1)
-            pred = pred.cpu().detach().numpy()
-            for b in range(len(pred)):
-                outs.append(pred[b])
-    
+#        if model_name == 'test':
+#            pred = F.softmax(pred, dim=1)
+#            pred = pred.cpu().detach().numpy()
+#            for b in range(len(pred)):
+#                outs.append(pred[b])
+        pred = torch.argmax(pred, axis=1)
+        pred = pred.cpu().detach().numpy()
+        for b in range(len(pred)):
+            outs.append(data["classes"][pred[b]])
     return outs
 
 
