@@ -109,7 +109,7 @@ def test(ori_data, cur_data, model, params, mode="test"):
         batch_range = min(params["BATCH_SIZE"], len(x) - i)
 
         batch_x = [[word_to_idx(ori_data, w) for w in sent] +
-                   [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent))
+                   [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent[:params["MAX_SENT_LEN"]]))
                    for sent in x[i:i + batch_range]]
         batch_y = [ori_data["classes"].index(c) for c in y[i:i + batch_range]]
 
@@ -137,7 +137,7 @@ def predict(ori_data, cur_data, model, params, model_name="Seq2Seq"):
         
         
         batch_x = [[word_to_idx(ori_data, w) for w in sent] +
-                   [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent))
+                   [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent[:params["MAX_SENT_LEN"]]))
                    for sent in x[i:i + batch_range]]
             
 
