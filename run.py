@@ -132,7 +132,8 @@ def predict(data, model, params, model_name="Seq2Seq"):
         batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
         pred = model(batch_x).squeeze()
         pred = pred.cpu().detach().numpy()
-        outs.append(pred)
+        for b in range(len(pred)):
+            outs.append(pred[b])
     
     return outs
 
