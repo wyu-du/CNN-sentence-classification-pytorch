@@ -224,6 +224,11 @@ def main():
         with open(fpath + 'test_label.txt', 'w') as f:
             for pred in model_preds:
                 f.write(pred+'\n')
+        data_out = utils.read_DA_DialogBank_sent()
+        model_preds_out = predict(data_out, model, params, options.model_name)
+        with open(fpath + 'dialogbank_label.txt', 'w') as f:
+            for pred in model_preds_out:
+                f.write(pred+'\n')
     
 if __name__ == "__main__":
     main()

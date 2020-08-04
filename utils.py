@@ -100,7 +100,7 @@ def read_DA_DailyDialog_sent():
                 if len(line) > 0:
                     y.append(line.split()[0])
                     x.append(line.split()[1:])
-        x, y = shuffle(x, y)
+#        x, y = shuffle(x, y)
         if mode.split('_')[1] == "train":
             data["train_x"], data["train_y"] = x, y
         elif mode.split('_')[1] == "dev":
@@ -126,7 +126,7 @@ def read_DA_AMI_sent():
                 if len(line) > 0:
                     y.append(line.split()[0])
                     x.append(line.split()[1:])
-        x, y = shuffle(x, y)
+#        x, y = shuffle(x, y)
         if mode.split('_')[1] == "train":
             data["train_x"], data["train_y"] = x, y
         elif mode.split('_')[1] == "dev":
@@ -152,7 +152,7 @@ def read_DA_MapTask_sent():
                 if len(line) > 0:
                     y.append(line.split()[0])
                     x.append(line.split()[1:])
-        x, y = shuffle(x, y)
+#        x, y = shuffle(x, y)
         if mode.split('_')[1] == "train":
             data["train_x"], data["train_y"] = x, y
         elif mode.split('_')[1] == "dev":
@@ -178,7 +178,7 @@ def read_DA_Switchboard_sent():
                 if len(line) > 0:
                     y.append(line.split()[0])
                     x.append(line.split()[1:])
-        x, y = shuffle(x, y)
+#        x, y = shuffle(x, y)
         if mode.split('_')[1] == "train":
             data["train_x"], data["train_y"] = x, y
         elif mode.split('_')[1] == "dev":
@@ -192,6 +192,23 @@ def read_DA_Switchboard_sent():
 
     return data
 
+def read_DA_DialogBank_sent():
+    data = {}
+
+    def read(mode):
+        x, y = [], []
+        with open("data/DA_ISO_sent/" + mode + ".txt", "r", encoding="utf-8") as f:
+            lines = f.read().split("\n")
+            for line in lines:
+                if len(line) > 0:
+                    y.append(line.split()[0])
+                    x.append(line.split()[1:])
+#        x, y = shuffle(x, y)
+        data["test_x"], data["test_y"] = x, y
+
+    read("DialogBank_test")
+
+    return data
 
 def read_DailyDialog_pred():
     data = read_DailyDialog_sent()
