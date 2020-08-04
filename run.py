@@ -5,6 +5,7 @@ from torch.autograd import Variable
 import torch
 import torch.optim as optim
 import torch.nn as nn
+import torch.nn.functional as F
 
 from sklearn.utils import shuffle
 from gensim.models.keyedvectors import KeyedVectors
@@ -130,10 +131,17 @@ def predict(data, model, params, model_name="Seq2Seq"):
                    for sent in x[i:i + batch_range]]
 
         batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
-        pred = model(batch_x).squeeze()
-        pred = pred.cpu().detach().numpy()
-        for b in range(len(pred)):
-            outs.append(pred[b])
+        pred = model(batch_x)
+        if model_name == 'test':
+            pred = F.softmax(pred)
+            pred = pred.cpu().detach().numpy()
+            for b in range(len(pred)):
+                outs.append(pred[b])
+        else:
+            pred = torch.argmax(pred, axis=1)
+            pred = pred.cpu().detach().numpy()
+            for b in range(len(pred)):
+                outs.append(pred[b])
     
     return outs
 
