@@ -67,8 +67,8 @@ def train(data, params):
             nn.utils.clip_grad_norm_(model.parameters(), max_norm=params["NORM_LIMIT"])
             optimizer.step()
 
-        dev_acc = test(data, model, params, mode="dev")
-        test_acc = test(data, model, params)
+        dev_acc = test(data, data, model, params, mode="dev")
+        test_acc = test(data, data, model, params)
         print("epoch:", e + 1, "/ dev_acc:", dev_acc, "/ test_acc:", test_acc)
 
         if params["EARLY_STOPPING"] and dev_acc <= pre_dev_acc:
@@ -86,23 +86,32 @@ def train(data, params):
     return best_model
 
 
-def test(data, model, params, mode="test"):
+def word_to_idx(ori_data, w):
+    out_idx = 0
+    if w in ori_data["word_to_idx"].keys():
+        out_idx = ori_data["word_to_idx"][w]
+    else:
+        out_idx = ori_data["word_to_idx"]['[UNK]']
+    return out_idx
+
+
+def test(ori_data, cur_data, model, params, mode="test"):
     model.eval()
 
     if mode == "dev":
-        x, y = data["dev_x"], data["dev_y"]
+        x, y = ori_data["dev_x"], ori_data["dev_y"]
     elif mode == "test":
-        x, y = data["test_x"], data["test_y"]
+        x, y = cur_data["test_x"], cur_data["test_y"]
         
     correct = 0.
     counts = 0.
     for i in range(0, len(x), params["BATCH_SIZE"]):
         batch_range = min(params["BATCH_SIZE"], len(x) - i)
 
-        batch_x = [[data["word_to_idx"][w] for w in sent] +
+        batch_x = [[word_to_idx(ori_data, w) for w in sent] +
                    [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent))
                    for sent in x[i:i + batch_range]]
-        batch_y = [data["classes"].index(c) for c in y[i:i + batch_range]]
+        batch_y = [ori_data["classes"].index(c) for c in y[i:i + batch_range]]
 
         batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
         batch_y = Variable(torch.LongTensor(batch_y)).cuda(params["GPU"])
@@ -125,10 +134,12 @@ def predict(ori_data, cur_data, model, params, model_name="Seq2Seq"):
     outs = []
     for i in range(0, len(x), params["BATCH_SIZE"]):
         batch_range = min(params["BATCH_SIZE"], len(x) - i)
-
-        batch_x = [[ori_data["word_to_idx"][w] for w in sent] +
+        
+        
+        batch_x = [[word_to_idx(ori_data, w) for w in sent] +
                    [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent))
                    for sent in x[i:i + batch_range]]
+            
 
         batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
         pred = model(batch_x)
@@ -204,8 +215,11 @@ def main():
         print("=" * 20 + "TRAINING FINISHED" + "=" * 20)
     elif options.mode == "test":
         model = utils.load_model(params).cuda(params["GPU"])
-        test_acc = test(data, model, params)
-        print("test acc:", test_acc)
+        test_acc = test(data, data, model, params)
+        print("test acc (in domain):", test_acc)
+        data_out = utils.read_DA_DialogBank_sent()
+        test_acc = test(data, data_out, model, params)
+        print("test acc (out of domain):", test_acc)
     elif options.mode == "model_pred":
         model = utils.load_model(params).cuda(params["GPU"])
         model_preds = predict(data, model, params, options.model_name)
