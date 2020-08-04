@@ -140,7 +140,7 @@ def main():
     parser = argparse.ArgumentParser(description="-----[CNN-classifier]-----")
     parser.add_argument("--mode", default="train", help="train: train (with test) a model / test: test saved models")
     parser.add_argument("--model", default="non-static", help="available models: rand, static, non-static, multichannel")
-    parser.add_argument("--model_name", default="Seq2Seq", help="available models: Seq2Seq, HRED, VHRED, HRAN")
+    parser.add_argument("--model_name", default="test", help="available models: Seq2Seq, HRED, VHRED, HRAN")
     parser.add_argument("--dataset", default="DA_Switchboard_sent", help="available datasets: MR, TREC, DailyDialog")
     parser.add_argument("--save_model", default=True, action='store_true', help="whether saving model or not")
     parser.add_argument("--early_stopping", default=False, action='store_true', help="whether to apply early stopping")
@@ -149,7 +149,7 @@ def main():
     parser.add_argument("--gpu", default=0, type=int, help="the number of gpu to be used")
 
     options = parser.parse_args()
-    if options.mode == "pred":
+    if options.mode == "model_pred":
         data = getattr(utils, f"read_DailyDialog_pred")()
     else:
         data = getattr(utils, f"read_{options.dataset}")()
@@ -198,11 +198,16 @@ def main():
         model = utils.load_model(params).cuda(params["GPU"])
         test_acc = test(data, model, params)
         print("test acc:", test_acc)
+    elif options.mode == "model_pred":
+        model = utils.load_model(params).cuda(params["GPU"])
+        model_preds = predict(data, model, params, options.model_name)
+        np.savetxt('data/DA_ISO_sent/'+options.dataset+'_pred/'+options.model_name+'_label.txt',
+                   model_preds, delimiter=', ', fmt='%12.8f')
     else:
         model = utils.load_model(params).cuda(params["GPU"])
         model_preds = predict(data, model, params, options.model_name)
-        np.savetxt('data/DA_ISO_sent/pred/'+options.model_name+'_label.txt',
+        np.savetxt('data/DA_ISO_sent/'+options.dataset+'_pred/'+options.model_name+'_label.txt',
                    model_preds, delimiter=', ', fmt='%12.8f')
-
+    
 if __name__ == "__main__":
     main()
