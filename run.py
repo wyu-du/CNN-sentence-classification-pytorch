@@ -129,9 +129,9 @@ def predict(data, model, params, model_name="Seq2Seq"):
                    for sent in x[i:i + batch_range]]
 
         batch_x = Variable(torch.LongTensor(batch_x)).cuda(params["GPU"])
-        pred = torch.argmax(model(batch_x), axis=1)
-        for p_x in pred:
-            outs.append(p_x.item())
+        pred = model(batch_x).squeeze()
+        pred = pred.cpu().detach().numpy()
+        outs.append(pred)
     
     return outs
 
@@ -201,9 +201,8 @@ def main():
     else:
         model = utils.load_model(params).cuda(params["GPU"])
         model_preds = predict(data, model, params, options.model_name)
-        with open('data/DA_ISO_sent/pred/'+options.model_name+'_label.txt', 'w') as f:
-            for pred in model_preds:
-                f.write(str(pred)+'\n')
+        np.savetxt('data/DA_ISO_sent/pred/'+options.model_name+'_label.txt',
+                   model_preds, delimiter=', ', fmt='%12.8f')
 
 if __name__ == "__main__":
     main()
