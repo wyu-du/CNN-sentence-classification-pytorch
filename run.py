@@ -115,18 +115,18 @@ def test(data, model, params, mode="test"):
     return correct/counts
 
 
-def predict(data, model, params, model_name="Seq2Seq"):
+def predict(ori_data, cur_data, model, params, model_name="Seq2Seq"):
     model.eval()
     
     if model_name == 'test':
-        x = data["test_x"]
+        x = cur_data["test_x"]
     else:
-        x = data[model_name]
+        x = cur_data[model_name]
     outs = []
     for i in range(0, len(x), params["BATCH_SIZE"]):
         batch_range = min(params["BATCH_SIZE"], len(x) - i)
 
-        batch_x = [[data["word_to_idx"][w] for w in sent] +
+        batch_x = [[ori_data["word_to_idx"][w] for w in sent] +
                    [params["VOCAB_SIZE"] + 1] * (params["MAX_SENT_LEN"] - len(sent))
                    for sent in x[i:i + batch_range]]
 
@@ -140,7 +140,7 @@ def predict(data, model, params, model_name="Seq2Seq"):
         pred = torch.argmax(pred, axis=1)
         pred = pred.cpu().detach().numpy()
         for b in range(len(pred)):
-            outs.append(data["classes"][pred[b]])
+            outs.append(ori_data["classes"][pred[b]])
     return outs
 
 
@@ -217,7 +217,7 @@ def main():
                 f.write(pred+'\n')
     else:
         model = utils.load_model(params).cuda(params["GPU"])
-        model_preds = predict(data, model, params, options.model_name)
+        model_preds = predict(data, data, model, params, options.model_name)
         fpath = 'data/DA_ISO_sent/'+options.dataset+'_pred/'
         if not os.path.exists(fpath):
             os.makedirs(fpath)
@@ -225,7 +225,7 @@ def main():
             for pred in model_preds:
                 f.write(pred+'\n')
         data_out = utils.read_DA_DialogBank_sent()
-        model_preds_out = predict(data_out, model, params, options.model_name)
+        model_preds_out = predict(data, data_out, model, params, options.model_name)
         with open(fpath + 'dialogbank_label.txt', 'w') as f:
             for pred in model_preds_out:
                 f.write(pred+'\n')
