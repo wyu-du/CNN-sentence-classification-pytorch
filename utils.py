@@ -243,7 +243,7 @@ def read_DailyDialog_pred():
     def read(model):
         x = []
 
-        with open("data/DailyDialog_sent/DailyDialog_pred/" + model + ".txt", "r", encoding="utf-8") as f:
+        with open("data/DailyDialog_pred/" + model + ".txt", "r", encoding="utf-8") as f:
             lines = f.read().split("\n")
             for line in lines:
                 if len(line) > 0:
@@ -256,6 +256,7 @@ def read_DailyDialog_pred():
     read("VHRED")
     read("HRAN")
     read("DSHRED_RA")
+    read("test")
 
     return data
 

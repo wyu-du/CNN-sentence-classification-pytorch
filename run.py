@@ -127,10 +127,7 @@ def test(ori_data, cur_data, model, params, mode="test"):
 def predict(ori_data, cur_data, model, params, model_name="Seq2Seq"):
     model.eval()
     
-    if model_name == 'test':
-        x = cur_data["test_x"]
-    else:
-        x = cur_data[model_name]
+    x = cur_data[model_name]
     outs = []
     for i in range(0, len(x), params["BATCH_SIZE"]):
         batch_range = min(params["BATCH_SIZE"], len(x) - i)
@@ -160,7 +157,7 @@ def main():
     parser.add_argument("--mode", default="train", help="train: train (with test) a model / test: test saved models")
     parser.add_argument("--model", default="non-static", help="available models: rand, static, non-static, multichannel")
     parser.add_argument("--model_name", default="test", help="available models: Seq2Seq, HRED, VHRED, HRAN")
-    parser.add_argument("--dataset", default="DA_Switchboard_sent", help="available datasets: MR, TREC, DailyDialog")
+    parser.add_argument("--dataset", default="DA_DailyDialog_sent", help="available datasets: MR, TREC, DailyDialog")
     parser.add_argument("--save_model", default=True, action='store_true', help="whether saving model or not")
     parser.add_argument("--early_stopping", default=False, action='store_true', help="whether to apply early stopping")
     parser.add_argument("--epoch", default=20, type=int, help="number of max epoch")
@@ -168,10 +165,7 @@ def main():
     parser.add_argument("--gpu", default=0, type=int, help="the number of gpu to be used")
 
     options = parser.parse_args()
-    if options.mode == "model_pred":
-        data = getattr(utils, f"read_DailyDialog_pred")()
-    else:
-        data = getattr(utils, f"read_{options.dataset}")()
+    data = getattr(utils, f"read_{options.dataset}")()
 
     data["vocab"] = sorted(list(set([w for sent in data["train_x"] + data["dev_x"] + data["test_x"] for w in sent])))
     data["classes"] = ['question', 'inform', 'directives', 'commissives', 
@@ -224,7 +218,8 @@ def main():
         print("test acc (out of domain):", test_acc)
     elif options.mode == "model_pred":
         model = utils.load_model(params).cuda(params["GPU"])
-        model_preds = predict(data, model, params, options.model_name)
+        data_out = utils.read_DailyDialog_pred()
+        model_preds = predict(data, data_out, model, params, options.model_name)
         fpath = 'data/DA_ISO_sent/'+options.dataset+'_pred/'
         if not os.path.exists(fpath):
             os.makedirs(fpath)
