@@ -256,6 +256,9 @@ def read_DailyDialog_pred():
     read("VHRED")
     read("HRAN")
     read("DSHRED_RA")
+    read("blender_pre")
+    read("blender_ft")
+    read("image_seq2seq_ft")
     read("test")
 
     return data
